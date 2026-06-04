@@ -8,6 +8,12 @@ app = FastAPI(
     version="1.0.0"
 )
 
+@app.get("/")
+def root():
+    return {
+        "message": "Knowledge Hub API"
+    }
+
 app.include_router(
     health_router,
     prefix="/api"
@@ -17,9 +23,3 @@ app.include_router(
     auth_router,
     prefix="/api"
 )
-
-@app.get("/")
-def root():
-    return {
-        "message": "Knowledge Hub API"
-    }
