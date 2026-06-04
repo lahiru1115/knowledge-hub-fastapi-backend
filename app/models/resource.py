@@ -13,8 +13,8 @@ from sqlalchemy.orm import relationship
 from app.models.base import Base
 
 
-class Collection(Base):
-    __tablename__ = "collections"
+class Resource(Base):
+    __tablename__ = "resources"
 
     id: Mapped[str] = mapped_column(
         String,
@@ -22,17 +22,28 @@ class Collection(Base):
         default=lambda: str(uuid4())
     )
 
-    user_id: Mapped[str] = mapped_column(
-        ForeignKey("users.id")
+    collection_id: Mapped[str] = mapped_column(
+        ForeignKey("collections.id")
     )
 
-    name: Mapped[str] = mapped_column(
-        String(100)
+    title: Mapped[str] = mapped_column(
+        String(255),
+        nullable=False
     )
 
-    description: Mapped[str | None] = mapped_column(
+    url: Mapped[str] = mapped_column(
+        Text,
+        nullable=False
+    )
+
+    notes: Mapped[str | None] = mapped_column(
         Text,
         nullable=True
+    )
+
+    resource_type: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -40,13 +51,7 @@ class Collection(Base):
         default=datetime.utcnow
     )
 
-    user = relationship(
-        "User",
-        back_populates="collections"
-    )
-
-    resources = relationship(
-        "Resource",
-        back_populates="collection",
-        cascade="all, delete"
+    collection = relationship(
+        "Collection",
+        back_populates="resources"
     )
