@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from sqlalchemy import String, DateTime
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import relationship
 
 from app.models.base import Base
 
@@ -35,4 +36,10 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         default=datetime.utcnow
+    )
+
+    collections = relationship(
+        "Collection",
+        back_populates="user",
+        cascade="all, delete"
     )
