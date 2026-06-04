@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
+from app.api.collections import router as collections_router
 
 app = FastAPI(
     title="Knowledge Hub API",
@@ -21,5 +22,10 @@ app.include_router(
 
 app.include_router(
     auth_router,
+    prefix="/api"
+)
+
+app.include_router(
+    collections_router,
     prefix="/api"
 )
