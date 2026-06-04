@@ -35,7 +35,7 @@ target_metadata = Base.metadata
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
 
-print(Base.metadata.tables.keys())
+print(Base.metadata.tables.keys()) # alembic revision --autogenerate -m "test"
 
 
 def run_migrations_offline() -> None:
