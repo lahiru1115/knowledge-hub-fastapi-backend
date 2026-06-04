@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from app.models.base import Base
-from app.models.user import User
+from app.models import *
 
 from app.core.config import settings
 
@@ -34,6 +34,8 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+
+print(Base.metadata.tables.keys())
 
 
 def run_migrations_offline() -> None:
