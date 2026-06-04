@@ -10,18 +10,40 @@ from app.models.user import User
 
 from app.schemas.collection import (
     CollectionCreate,
-    CollectionResponse
+    CollectionResponse,
+    CollectionUpdate
 )
 
 from app.services.collection_service import (
+    create_collection,
     get_collections,
-    create_collection
+    get_collection_by_id,
+    update_collection,
+    delete_collection
 )
 
 router = APIRouter(
     prefix="/collections",
     tags=["Collections"]
 )
+
+
+@router.post(
+    "",
+    response_model=CollectionResponse
+)
+def create(
+    payload: CollectionCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+    return create_collection(
+        db,
+        current_user,
+        payload
+    )
 
 
 @router.get(
@@ -42,19 +64,48 @@ def get_all(
     )
 
 
-@router.post(
-    "",
+@router.get(
+    "/{collection_id}",
     response_model=CollectionResponse
 )
-def create(
-    payload: CollectionCreate,
+def get_one(
+    collection_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(
-        get_current_user
-    )
+    current_user: User = Depends(get_current_user)
 ):
-    return create_collection(
+    return get_collection_by_id(
         db,
         current_user,
+        collection_id
+    )
+
+
+@router.put(
+    "/{collection_id}",
+    response_model=CollectionResponse
+)
+def update(
+    collection_id: str,
+    payload: CollectionUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return update_collection(
+        db,
+        current_user,
+        collection_id,
         payload
+    )
+
+
+@router.delete("/{collection_id}")
+def delete(
+    collection_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return delete_collection(
+        db,
+        current_user,
+        collection_id
     )
