@@ -1,0 +1,36 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments (Always ignore your local venv)
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+secrets.toml
+
+# FastAPI / Uvicorn test & log files
+*.log
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database files (if using local SQLite for development)
+*.db
+*.sqlite3
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+Thumbs.db
