@@ -57,6 +57,12 @@ class Resource(Base):
         back_populates="resources"
     )
 
+    tags = relationship(
+        "Tag",
+        secondary="resource_tags",
+        back_populates="resources"
+    )
+
     __table_args__ = (
         Index("idx_resource_title", "title"),
         Index("idx_resource_type", "resource_type"),

@@ -3,6 +3,7 @@ from sqlalchemy import select, func
 
 from app.models.resource import Resource
 from app.models.collection import Collection
+from app.models.tag import Tag
 
 
 def create_resource(db, user, payload):
@@ -26,6 +27,16 @@ def create_resource(db, user, payload):
         url=payload.url,
         notes=payload.notes,
         resource_type=payload.resource_type
+    )
+
+    resource.tags = (
+        db.execute(
+            select(Tag).where(
+                Tag.id.in_(payload.tag_ids)
+            )
+        )
+        .scalars()
+        .all()
     )
 
     db.add(resource)

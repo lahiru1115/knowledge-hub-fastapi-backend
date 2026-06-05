@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from enum import Enum
 
+from app.schemas.tag import TagResponse
+
 
 class ResourceType(str, Enum):
     article = "article"
@@ -15,6 +17,7 @@ class ResourceCreate(BaseModel):
     url: str
     notes: str | None = None
     resource_type: ResourceType
+    tag_ids: list[str] = []
 
 
 class ResourceUpdate(BaseModel):
@@ -31,6 +34,7 @@ class ResourceResponse(BaseModel):
     url: str
     notes: str | None
     resource_type: ResourceType
+    tags: list[TagResponse] = []
 
     class Config:
         from_attributes = True
