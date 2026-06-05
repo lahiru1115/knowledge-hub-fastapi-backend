@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from app.models.resource import Resource
 from app.models.collection import Collection
@@ -35,14 +35,83 @@ def create_resource(db, user, payload):
     return resource
 
 
-def get_resources(db, user):
+def get_resources(
+    db,
+    user,
+    search=None,
+    resource_type=None,
+    collection_id=None,
+    page=1,
+    page_size=20
+):
     stmt = (
         select(Resource)
         .join(Collection)
-        .where(Collection.user_id == user.id)
+        .where(
+            Collection.user_id == user.id
+        )
     )
 
-    return db.execute(stmt).scalars().all()
+    count_stmt = (
+        select(func.count())
+        .select_from(Resource)
+        .join(Collection)
+        .where(
+            Collection.user_id == user.id
+        )
+    )
+
+    if search:
+        stmt = stmt.where(
+            Resource.title.ilike(
+                f"%{search}%"
+            )
+        )
+
+        count_stmt = count_stmt.where(
+            Resource.title.ilike(
+                f"%{search}%"
+            )
+        )
+
+    if resource_type:
+        stmt = stmt.where(
+            Resource.resource_type
+            == resource_type
+        )
+
+        count_stmt = count_stmt.where(
+            Resource.resource_type
+            == resource_type
+        )
+
+    if collection_id:
+        stmt = stmt.where(
+            Resource.collection_id
+            == collection_id
+        )
+
+        count_stmt = count_stmt.where(
+            Resource.collection_id
+            == collection_id
+        )
+
+    total = db.execute(
+        count_stmt
+    ).scalar()
+
+    resources = db.execute(
+        stmt.offset(
+            (page - 1) * page_size
+        ).limit(page_size)
+    ).scalars().all()
+
+    return {
+        "items": resources,
+        "page": page,
+        "page_size": page_size,
+        "total": total
+    }
 
 
 def delete_resource(db, user, resource_id: str):

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi import Depends
+from fastapi import Query
 
 from sqlalchemy.orm import Session
 
@@ -10,7 +11,8 @@ from app.models.user import User
 
 from app.schemas.resource import (
     ResourceCreate,
-    ResourceResponse
+    ResourceResponse,
+    PaginatedResources
 )
 
 from app.services.resource_service import (
@@ -43,15 +45,26 @@ def create(
 
 @router.get(
     "",
-    response_model=list[ResourceResponse]
+    response_model=PaginatedResources
 )
 def get_all(
+    search: str | None = None,
+    resource_type: str | None = None,
+    collection_id: str | None = None,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     return get_resources(
-        db,
-        current_user
+        db=db,
+        user=current_user,
+        search=search,
+        resource_type=resource_type,
+        collection_id=collection_id,
+        page=page,
+        page_size=page_size
     )
 
 

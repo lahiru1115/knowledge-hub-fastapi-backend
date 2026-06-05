@@ -5,6 +5,7 @@ from sqlalchemy import String
 from sqlalchemy import Text
 from sqlalchemy import ForeignKey
 from sqlalchemy import DateTime
+from sqlalchemy import Index
 
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -54,4 +55,10 @@ class Resource(Base):
     collection = relationship(
         "Collection",
         back_populates="resources"
+    )
+
+    __table_args__ = (
+        Index("idx_resource_title", "title"),
+        Index("idx_resource_type", "resource_type"),
+        Index("idx_resource_collection", "collection_id"),
     )
