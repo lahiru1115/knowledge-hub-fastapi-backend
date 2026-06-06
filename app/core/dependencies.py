@@ -1,14 +1,10 @@
-import email
-
 from jose import JWTError
 from jose import jwt
 
 from fastapi import Depends
 from fastapi import HTTPException
 from fastapi import status
-
-from fastapi.security import HTTPBearer
-from fastapi.security import HTTPAuthorizationCredentials
+from fastapi import Request
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -17,13 +13,19 @@ from app.core.database import get_db
 from app.core.config import settings
 from app.models.user import User
 
-security = HTTPBearer()
-
 def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
+    request: Request,
     db: Session = Depends(get_db)
 ):
-    token = credentials.credentials
+    token = request.cookies.get(
+        "access_token"
+    )
+
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated"
+        )
 
     try:
         payload = jwt.decode(

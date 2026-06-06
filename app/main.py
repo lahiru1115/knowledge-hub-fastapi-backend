@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.health import router as health_router
 from app.api.auth import router as auth_router
@@ -10,6 +11,16 @@ app = FastAPI(
     title="Knowledge Hub API",
     version="1.0.0",
     swagger_ui_parameters={"persistAuthorization": True}
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.get("/")

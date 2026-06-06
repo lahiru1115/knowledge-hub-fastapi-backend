@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from fastapi import Depends
 from fastapi import HTTPException
 
@@ -51,26 +51,30 @@ def register(
         )
     
 
-@router.post(
-    "/login",
-    response_model=LoginResponse
-)
+@router.post("/login")
 def login(
     payload: LoginRequest,
+    response: Response,
     db: Session = Depends(get_db)
 ):
-    try:
-        return login_user(
-            db,
-            payload.email,
-            payload.password
-        )
+    token_data = login_user(
+        db,
+        payload.email,
+        payload.password
+    )
 
-    except ValueError as e:
-        raise HTTPException(
-            status_code=401,
-            detail=str(e)
-        )
+    response.set_cookie(
+        key="access_token",
+        value=token_data["access_token"],
+        httponly=True,
+        secure=False,
+        samesite="lax",
+        max_age=60 * 60
+    )
+
+    return {
+        "message": "Logged in"
+    }
     
 
 @router.get(
@@ -83,3 +87,14 @@ def me(
     )
 ):
     return current_user
+
+
+@router.post("/logout")
+def logout(response: Response):
+    response.delete_cookie(
+        key="access_token"
+    )
+
+    return {
+        "message": "Logged out"
+    }
