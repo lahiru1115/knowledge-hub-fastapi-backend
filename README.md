@@ -35,6 +35,7 @@ alembic revision --autogenerate -m "create users table"
 alembic revision --autogenerate -m "create collections table"
 alembic revision --autogenerate -m "create resources table"
 alembic revision --autogenerate -m "add resource indexes"
+alembic revision --autogenerate -m "create tags tables"
 ```
 
 ## Run Migration
