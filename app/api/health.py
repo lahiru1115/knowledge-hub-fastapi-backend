@@ -1,7 +1,8 @@
 from fastapi import APIRouter
+from fastapi import Depends
+
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from fastapi import Depends
 
 from app.core.database import get_db
 

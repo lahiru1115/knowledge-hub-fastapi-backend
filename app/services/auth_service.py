@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
 
 from app.models.user import User
+
 from app.schemas.auth import RegisterRequest
+
 from app.core.security import (
     hash_password,
     verify_password,

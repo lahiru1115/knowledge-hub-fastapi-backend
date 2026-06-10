@@ -9,12 +9,13 @@ class ResourceType(str, Enum):
     video = "video"
     pdf = "pdf"
     website = "website"
+    other = "other"
 
 
 class ResourceCreate(BaseModel):
     collection_id: str
     title: str
-    url: str
+    url: str | None = None
     notes: str | None = None
     resource_type: ResourceType
     tag_ids: list[str] = []
@@ -22,17 +23,18 @@ class ResourceCreate(BaseModel):
 
 class ResourceUpdate(BaseModel):
     title: str
-    url: str
+    url: str | None = None
     notes: str | None = None
     resource_type: ResourceType
+    tag_ids: list[str] = []
 
 
 class ResourceResponse(BaseModel):
     id: str
     collection_id: str
     title: str
-    url: str
-    notes: str | None
+    url: str | None = None
+    notes: str | None = None
     resource_type: ResourceType
     tags: list[TagResponse] = []
 

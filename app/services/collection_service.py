@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+
 from sqlalchemy import select
 
 from app.models.collection import Collection

@@ -1,8 +1,11 @@
 from fastapi import HTTPException
+
 from sqlalchemy import select, func
 
 from app.models.resource import Resource
+
 from app.models.collection import Collection
+
 from app.models.tag import Tag
 
 

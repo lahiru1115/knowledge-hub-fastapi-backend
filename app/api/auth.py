@@ -9,7 +9,6 @@ from app.core.database import get_db
 from app.schemas.auth import (
     RegisterRequest,
     LoginRequest,
-    LoginResponse,
     UserResponse
 )
 
