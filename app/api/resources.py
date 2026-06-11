@@ -11,6 +11,7 @@ from app.models.user import User
 
 from app.schemas.resource import (
     ResourceCreate,
+    ResourceUpdate,
     ResourceResponse,
     PaginatedResources
 )
@@ -18,6 +19,7 @@ from app.schemas.resource import (
 from app.services.resource_service import (
     create_resource,
     get_resources,
+    update_resource,
     delete_resource
 )
 
@@ -65,6 +67,24 @@ def get_all(
         collection_id=collection_id,
         page=page,
         page_size=page_size
+    )
+
+
+@router.put(
+    "/{resource_id}",
+    response_model=ResourceResponse
+)
+def update(
+    resource_id: str,
+    payload: ResourceUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    return update_resource(
+        db,
+        current_user,
+        resource_id,
+        payload
     )
 
 

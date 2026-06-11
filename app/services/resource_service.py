@@ -2,10 +2,8 @@ from fastapi import HTTPException
 
 from sqlalchemy import select, func
 
-from app.models.resource import Resource
-
 from app.models.collection import Collection
-
+from app.models.resource import Resource
 from app.models.tag import Tag
 
 
@@ -126,6 +124,42 @@ def get_resources(
         "page_size": page_size,
         "total": total
     }
+
+
+def update_resource(db, user, resource_id: str, payload):
+    stmt = select(Resource).where(
+        Resource.id == resource_id,
+        Resource.collection.has(user_id=user.id)
+    )
+
+    resource = db.execute(stmt).scalar_one_or_none()
+
+    if not resource:
+        raise HTTPException(
+            status_code=404,
+            detail="Resource not found"
+        )
+
+    resource.title = payload.title
+    resource.url = payload.url
+    resource.notes = payload.notes
+    resource.resource_type = payload.resource_type
+
+    if payload.tag_ids is not None:
+        resource.tags = (
+            db.execute(
+                select(Tag).where(
+                    Tag.id.in_(payload.tag_ids)
+                )
+            )
+            .scalars()
+            .all()
+        )
+
+    db.commit()
+    db.refresh(resource)
+
+    return resource
 
 
 def delete_resource(db, user, resource_id: str):
