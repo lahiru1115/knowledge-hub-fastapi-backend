@@ -8,8 +8,8 @@ from app.core.dependencies import get_current_user
 
 from app.schemas.collection import (
     CollectionCreate,
+    CollectionUpdate,
     CollectionResponse,
-    CollectionUpdate
 )
 
 from app.services.collection_service import (
