@@ -24,3 +24,15 @@ def create_tag(db, payload):
     db.refresh(tag)
 
     return tag
+
+
+def get_tags(
+    db
+):
+    stmt = (
+        select(Tag)
+    )
+
+    return db.execute(
+        stmt
+    ).scalars().all()

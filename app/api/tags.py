@@ -4,6 +4,7 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.dependencies import get_current_user
 
 from app.schemas.tag import (
     TagCreate,
@@ -11,8 +12,11 @@ from app.schemas.tag import (
 )
 
 from app.services.tag_service import (
-    create_tag
+    create_tag,
+    get_tags
 )
+
+from app.models.user import User
 
 router = APIRouter(
     prefix="/tags",
@@ -31,4 +35,18 @@ def create(
     return create_tag(
         db,
         payload
+    )
+
+
+@router.get(
+    "",
+    response_model=list[
+        TagResponse
+    ]
+)
+def get_all(
+    db: Session = Depends(get_db)
+):
+    return get_tags(
+        db
     )
